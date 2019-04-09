@@ -1,6 +1,6 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3
 
-from __future__ import division
+
 import os
 import numpy
 import scipy
@@ -43,7 +43,7 @@ tt = {"TTT":"F|Phe","TTC":"F|Phe","TTA":"L|Leu","TTG":"L|Leu","TCT":"S|Ser","TCC
 
 def gc3(seq):#this function creates sequence with GC-content close to the GC-content of the input sequence, but counts of nucleotides may differ from input sequence.
     gc=at=0
-    for num in xrange(2,len(seq),3):#first calculating A+T and G+C of the input sequence in third codon position
+    for num in range(2,len(seq),3):#first calculating A+T and G+C of the input sequence in third codon position
         if seq[num]=='A'or seq[num]=='T':
             at+=1
         elif seq[num]=='G'or seq[num]=='C':
@@ -52,7 +52,7 @@ def gc3(seq):#this function creates sequence with GC-content close to the GC-con
     gc=gc/(len(seq)/3.)
     
     seq1=[]
-    for num in xrange(2,len(seq),3):#list "seq1" will contain the first two nt of codon, third codon position will containe flags for subsequent randomization. Flags ('_Y_','_R_','_H_',or '_N_') correspond to IUPAC single-letter code, Y-Pyrimindine(C or T), R-Purine(A or G), H-Not G(A or C or T), N-any.
+    for num in range(2,len(seq),3):#list "seq1" will contain the first two nt of codon, third codon position will containe flags for subsequent randomization. Flags ('_Y_','_R_','_H_',or '_N_') correspond to IUPAC single-letter code, Y-Pyrimindine(C or T), R-Purine(A or G), H-Not G(A or C or T), N-any.
         seq1+=seq[num-2:num],
         if (seq[num]=='T'or seq[num]=='C')and(seq[num-2:num]=='TT'or seq[num-2:num]=='TA'or seq[num-2:num]=='TG'or seq[num-2:num]=='CA'or seq[num-2:num]=='AA'or seq[num-2:num]=='AG'or seq[num-2:num]=='GA'):
             seq1+='_Y_',
@@ -101,7 +101,7 @@ def gc3(seq):#this function creates sequence with GC-content close to the GC-con
 def third_simple(seq):#this function creates scrambled sequence with the numbers of each nucleotide identical to the input sequence.
     Y=[]
     seq1=[]
-    for num in xrange(2,len(seq),3):
+    for num in range(2,len(seq),3):
         if (seq[num]=='T' or seq[num]=='C')and(seq[num-2:num]=='TT'or seq[num-2:num]=='TC'or seq[num-2:num]=='TA'or seq[num-2:num]=='TG'or seq[num-2:num]=='CT'or seq[num-2:num]=='CC'or seq[num-2:num]=='CA'or seq[num-2:num]=='CG'or seq[num-2:num]=='AT'or seq[num-2:num]=='AC'or seq[num-2:num]=='AA'or seq[num-2:num]=='AG'or seq[num-2:num]=='GU'or seq[num-2:num]=='GC'or seq[num-2:num]=='GA'or seq[num-2:num]=='GG'):
             Y+=seq[num],
             seq1+=seq[num-2:num],'_Y_',
@@ -110,21 +110,21 @@ def third_simple(seq):#this function creates scrambled sequence with the numbers
     #C and T from the original sequence in this case would be extracted into list "Y"
     shuffle(Y)#shuffling of list "Y". For example, before shuffling "Y" is ['C','T','C']; after - ['T','C','C']or['C','C','T']or['C','T','C']
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='_Y_':seq2+=Y.pop(0)#now elements of "Y" are inserted back into the sequence instead of '_Y_', but in a different order compared to the input sequence
         else:seq2+=seq1[i]
     seq=seq2
 
     R=[]#similar to the previous step, but A and G are shuffled
     seq1=[]
-    for num in xrange(2,len(seq),3):
+    for num in range(2,len(seq),3):
         if (seq[num]=='A' or seq[num]=='G')and(seq[num-2:num]=='TT'or seq[num-2:num]=='TC'or seq[num-2:num]=='CT'or seq[num-2:num]=='CC'or seq[num-2:num]=='CA'or seq[num-2:num]=='CG'or seq[num-2:num]=='AC'or seq[num-2:num]=='AA'or seq[num-2:num]=='AG'or seq[num-2:num]=='GT'or seq[num-2:num]=='GC'or seq[num-2:num]=='GA'or seq[num-2:num]=='GG'):
             R+=seq[num],
             seq1+=seq[num-2:num],'_R_',
         else:seq1+=seq[num-2:num+1],
     shuffle(R)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='_R_':seq2+=R.pop(0)
         else:seq2+=seq1[i]
     seq=seq2
@@ -132,28 +132,28 @@ def third_simple(seq):#this function creates scrambled sequence with the numbers
 
     H=[]#similar to the previous step, but A,C, and T are shuffled. Affected aminoacids are ILE (three codons), four-codon and four-codon portion of six-codon aminoacids.
     seq1=[]
-    for num in xrange(2,len(seq),3):
+    for num in range(2,len(seq),3):
         if (seq[num]=='A'or seq[num]=='C'or seq[num]=='T')and(seq[num-2:num]=='TC'or seq[num-2:num]=='CT'or seq[num-2:num]=='CC'or seq[num-2:num]=='CG'or seq[num-2:num]=='AT'or seq[num-2:num]=='AC'or seq[num-2:num]=='GT'or seq[num-2:num]=='GC'or seq[num-2:num]=='GG'):
             H+=seq[num],
             seq1+=seq[num-2:num],'_H_',
         else:seq1+=seq[num-2:num+1],
     shuffle(H)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='_H_':seq2+=H.pop(0)
         else:seq2+=seq1[i]
     seq=seq2
 
     N=[]#Shuffling of all four nucleotides, where possible. Affected aminoacids are four-codons and four-codon portion of six-codon aminoacids.
     seq1=[]
-    for num in xrange(2,len(seq),3):
+    for num in range(2,len(seq),3):
         if (seq[num]=='A'or seq[num]=='C'or seq[num]=='T'or seq[num]=='G')and(seq[num-2:num]=='TC'or seq[num-2:num]=='CT'or seq[num-2:num]=='CC'or seq[num-2:num]=='CG'or seq[num-2:num]=='AC'or seq[num-2:num]=='GT'or seq[num-2:num]=='GC'or seq[num-2:num]=='GG'):
             N+=seq[num],
             seq1+=seq[num-2:num],'_N_',
         else:seq1+=seq[num-2:num+1],
     shuffle(N)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='_N_':seq2+=N.pop(0)
         else:seq2+=seq1[i]
     seq=seq2        
@@ -161,7 +161,7 @@ def third_simple(seq):#this function creates scrambled sequence with the numbers
 
 def dn23(seq):#this function creates a randomized sequence, with dinucleotide frequences in codon position 2-3 close to those of the input sequence.
     aa=ag=ac=at=ga=gg=gc=gt=ca=cg=cc=ct=ta=tg=tc=tt=0
-    for num in xrange(2,len(seq),3):#first calculating dinucleotide frequences in codon position 2-3 
+    for num in range(2,len(seq),3):#first calculating dinucleotide frequences in codon position 2-3 
         if seq[num-1]=='A':
             if seq[num]=='A':
                 aa+=1
@@ -200,7 +200,7 @@ def dn23(seq):#this function creates a randomized sequence, with dinucleotide fr
                 tt+=1
     aa,ag,ac,at,ga,gg,gc,gt,ca,cg,cc,ct,ta,tg,tc,tt=aa/(len(seq)/3.),ag/(len(seq)/3.),ac/(len(seq)/3.),at/(len(seq)/3.),ga/(len(seq)/3.),gg/(len(seq)/3.),gc/(len(seq)/3.),gt/(len(seq)/3.),ca/(len(seq)/3.),cg/(len(seq)/3.),cc/(len(seq)/3.),ct/(len(seq)/3.),ta/(len(seq)/3.),tg/(len(seq)/3.),tc/(len(seq)/3.),tt/(len(seq)/3.)
     seq2=''
-    for num in xrange(2,len(seq),3):#now each codon is replaced with a synonimous codon according to the dinucleotide frequences in codon position 2-3 
+    for num in range(2,len(seq),3):#now each codon is replaced with a synonimous codon according to the dinucleotide frequences in codon position 2-3 
         seq2+=seq[num-2:num]
         if seq[num-1]=='A'and seq[num-2:num+1]!='TAA'and seq[num-2:num+1]!='TAG':
             if seq[num]=='T'or seq[num]=='C':
@@ -297,7 +297,7 @@ def third(seq):#this function creates sequence with dinucleotide content in codo
     seq1=[]
     TNT,TNC,TNA,TNG,GNT,GNA,GNC,GNG,CNG,CNA,CNT,CNC=[],[],[],[],[],[],[],[],[],[],[],[]#these lists will contain nucleotides from third codon position, with given [-1]and[+1]nucleotides to preserve dinucleotide content in conserved positions
     #four-codon and four-codon portion of six-codon aminoacids are affected
-    for num in xrange(2,len(seq)-3,3):
+    for num in range(2,len(seq)-3,3):
         seq1+=seq[num-2:num]        
         if seq[num]=='T' or seq[num]=='C' or seq[num]=='A' or seq[num]=='G':
             if seq[num-2:num]=='CT' or seq[num-2:num]=='GT':#LEU4 or VAL
@@ -353,7 +353,7 @@ def third(seq):#this function creates sequence with dinucleotide content in codo
     
     shuffle(TNT),shuffle(TNC),shuffle(TNA),shuffle(TNG),shuffle(GNG),shuffle(GNA),shuffle(GNT),shuffle(GNC),shuffle(CNT),shuffle(CNC),shuffle(CNA),shuffle(CNG)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='TNT':seq2+=TNT.pop(0)
         elif seq1[i]=='TNC':seq2+=TNC.pop(0)
         elif seq1[i]=='TNG':seq2+=TNG.pop(0)
@@ -370,7 +370,7 @@ def third(seq):#this function creates sequence with dinucleotide content in codo
     seq=seq2
     seq1=[]
     THT,THC,THA,THG,GHT,GHA,GHC,GHG,CHG,CHA,CHT,CHC=[],[],[],[],[],[],[],[],[],[],[],[]
-    for num in xrange(2,len(seq)-3,3):
+    for num in range(2,len(seq)-3,3):
         seq1+=seq[num-2:num]
         if seq[num]=='T' or seq[num]=='C' or seq[num]=='A':
             if seq[num-2:num]=='CT' or seq[num-2:num]=='GT' or seq[num-2:num]=='AT':#ILE3 or LEU4 or VAL
@@ -426,7 +426,7 @@ def third(seq):#this function creates sequence with dinucleotide content in codo
     
     shuffle(THT),shuffle(THC),shuffle(THA),shuffle(THG),shuffle(GHG),shuffle(GHA),shuffle(GHT),shuffle(GHC),shuffle(CHT),shuffle(CHC),shuffle(CHA),shuffle(CHG)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='THT':seq2+=THT.pop(0)
         elif seq1[i]=='THC':seq2+=THC.pop(0)
         elif seq1[i]=='THA':seq2+=THA.pop(0)
@@ -443,7 +443,7 @@ def third(seq):#this function creates sequence with dinucleotide content in codo
     seq=seq2
     seq1=[]
     TRT,TRC,TRA,TRG,ART,ARC,ARG,ARA,GRT,GRA,GRC,GRG,CRG,CRA,CRT,CRC=[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
-    for num in xrange(2,len(seq)-3,3):
+    for num in range(2,len(seq)-3,3):
         seq1+=seq[num-2:num]
         if seq[num]=='A' or seq[num]=='G':
             if seq[num-1]=='T' and seq[num-2:num]!='AT':#not MET
@@ -514,7 +514,7 @@ def third(seq):#this function creates sequence with dinucleotide content in codo
     
     shuffle(TRT),shuffle(TRC),shuffle(TRA),shuffle(TRG),shuffle(GRG),shuffle(GRA),shuffle(GRT),shuffle(GRC),shuffle(ARG),shuffle(ARC),shuffle(ART),shuffle(ARA),shuffle(CRT),shuffle(CRC),shuffle(CRA),shuffle(CRG)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='TRT':seq2+=TRT.pop(0)
         elif seq1[i]=='TRC':seq2+=TRC.pop(0)
         elif seq1[i]=='TRA':seq2+=TRA.pop(0)
@@ -536,7 +536,7 @@ def third(seq):#this function creates sequence with dinucleotide content in codo
 
     seq1=[]
     TYT,TYC,TYA,TYG,AYT,AYC,AYG,AYA,GYT,GYA,GYC,GYG,CYG,CYA,CYT,CYC=[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
-    for num in xrange(2,len(seq)-3,3):
+    for num in range(2,len(seq)-3,3):
         seq1+=seq[num-2:num]
         if seq[num]=='T' or seq[num]=='C':
             if seq[num-1]=='T':
@@ -607,7 +607,7 @@ def third(seq):#this function creates sequence with dinucleotide content in codo
     
     shuffle(TYT),shuffle(TYC),shuffle(TYA),shuffle(TYG),shuffle(GYG),shuffle(GYA),shuffle(GYT),shuffle(GYC),shuffle(AYG),shuffle(AYC),shuffle(AYT),shuffle(AYA),shuffle(CYT),shuffle(CYC),shuffle(CYA),shuffle(CYG)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='TYT':seq2+=TYT.pop(0)
         elif seq1[i]=='TYC':seq2+=TYC.pop(0)
         elif seq1[i]=='TYA':seq2+=TYA.pop(0)
@@ -647,7 +647,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     TAG_arg=[]#only 'A' to 'C'. Arginine has AGY and CGN codons, first position can be shuffled. 
     
     seq1+=seq[:2]
-    for num in xrange(2,len(seq)-2,1):
+    for num in range(2,len(seq)-2,1):
         #seq1+=seq[num-2:num]
         if num%3==2 and seq[num-2:num]=='CT' and (seq[num]=='C' or seq[num]=='T'):
             if seq[num+1]=='A':
@@ -741,7 +741,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     shuffle(CTYT),shuffle(CTYA),shuffle(CTYG),shuffle(CTYC),shuffle(TAT),shuffle(TAA),shuffle(TAG),shuffle(TAC),shuffle(TGT),shuffle(TGA),shuffle(TGG),shuffle(TGC),shuffle(TAG_arg)
     
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='CTYT':seq2+=CTYT.pop(0)
         elif seq1[i]=='CTYC':seq2+=CTYC.pop(0)
         elif seq1[i]=='CTYA':seq2+=CTYA.pop(0)
@@ -763,7 +763,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     TYT,AYT,GYT,CYT=[],[],[],[]
     seq1+=seq[:2]
     
-    for num in xrange(2,len(seq)-2,1):    
+    for num in range(2,len(seq)-2,1):    
         if ((seq[num]=='T' or seq[num]=='C') and seq[num+1]=='T' and num%3==2 and seq[num+1:num+4]!='TTA' and seq[num+1:num+4]!='TTG' and seq[num+1:num+4]!='CTA' and seq[num+1:num+4]!='CTG') or (num%3==0 and (seq[num:num+3]=='TTA' or seq[num:num+3]=='TTG' or seq[num:num+3]=='CTA' or seq[num:num+3]=='CTG')):
             if seq[num-1]=='T':
                 seq1+='TYT',
@@ -785,7 +785,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     
     shuffle(TYT),shuffle(GYT),shuffle(AYT),shuffle(CYT)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='TYT':seq2+=TYT.pop(0)
         elif seq1[i]=='AYT':seq2+=AYT.pop(0)
         elif seq1[i]=='GYT':seq2+=GYT.pop(0)
@@ -800,7 +800,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     TCRC,TCRA,TCRG,TCRT=[],[],[],[]#SER has TCN and AGY codons, first TCR will be converted to TCY
     CYC,CYA,CYG,CYT=[],[],[],[]
     
-    for num in xrange(2,len(seq)-2,3):
+    for num in range(2,len(seq)-2,3):
         seq1+=seq[num-2:num]
         if seq[num-2:num+1]=='TCA' or seq[num-2:num+1]=='TCG':
             if seq[num+1]=='C':
@@ -851,7 +851,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     shuffle(TCRC),shuffle(TCRA),shuffle(TCRG),shuffle(TCRT),shuffle(CYC),shuffle(CYA),shuffle(CYG),shuffle(CYT)
     
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='TCRC':seq2+=TCRC.pop(0)
         elif seq1[i]=='TCRA':seq2+=TCRA.pop(0)
         elif seq1[i]=='TCRG':seq2+=TCRG.pop(0)
@@ -870,7 +870,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     AAA_R,GAA_N,GAA_R,CAA_N,TAA_R,TAA_N,TAA_H,AAT_R,GAT_N,GAT_R,CAT_N,TAT_R,TAT_N,TAT_H=[],[],[],[],[],[],[],[],[],[],[],[],[],[]
     AGA_R,GBA_N,GGA_R,TGA_R,TBA_N,TYA_H,AGT_R,GBT_N,GGT_R,CBT_N,TGT_R,TBT_N,TYT_H,CBA_N=[],[],[],[],[],[],[],[],[],[],[],[],[],[]
     
-    for num in xrange(2,len(seq)-2,3):
+    for num in range(2,len(seq)-2,3):
         seq1+=seq[num-2:num]
         if seq[num:num+4]=='AAGC'or seq[num:num+4]=='AAGT':
             if seq[num-2:num]=='CA'or seq[num-2:num]=='AA'or seq[num-2:num]=='GA':
@@ -1019,7 +1019,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     
     
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='AAA_R':seq2+=AAA_R.pop(0)
         elif seq1[i]=='GAA_N':seq2+=GAA_N.pop(0)
         elif seq1[i]=='GAA_R':seq2+=GAA_R.pop(0)    
@@ -1066,7 +1066,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     GAGC,CAGC,TAGC,GAGT,CAGT,TAGT=[],[],[],[],[],[]
     GTCC,CTCC,TTCC,GTCT,CTCT,TTCT=[],[],[],[],[],[]
     
-    for num in xrange(2,len(seq)-3,3):
+    for num in range(2,len(seq)-3,3):
         if seq[num-2:num]=='AG'and(seq[num]=='C'or seq[num]=='T')and(seq[num-3]=='G'or seq[num-3]=='C'or seq[num-3]=='T'):
             if seq[num-3]=='G':
                 if seq[num]=='C':
@@ -1204,84 +1204,84 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     
     #GAGC,GTG,TCC
     change_num=randint(0,gAGc)
-    for i in xrange(change_num):
+    for i in range(change_num):
         GAGC[i]='TC'
         del GTG[0];GTG.append('A')
         del TCC[0];TCC.append('G')
     
     #GTCC,GAG,TGC
     change_num=randint(0,gTCc)
-    for i in xrange(change_num):
+    for i in range(change_num):
         GTCC[i]='AG'
         del GAG[0];GAG.append('T')
         del TGC[0];TGC.append('C')
     
     #GAGT,GTG,TCT
     change_num=randint(0,gAGt)
-    for i in xrange(change_num):
+    for i in range(change_num):
         GAGT[i]='TC'
         del GTG[0];GTG.append('A')
         del TCT[0];TCT.append('G')
     
     #GTCT,GAG,TGT
     change_num=randint(0,gTCt)
-    for i in xrange(change_num):
+    for i in range(change_num):
         GTCT[i]='AG'
         del GAG[0];GAG.append('T')
         del TGT[0];TGT.append('C')
     
     #CAGC,CTG,TCC
     change_num=randint(0,cAGc)
-    for i in xrange(change_num):
+    for i in range(change_num):
         CAGC[i]='TC'
         del CTG[0];CTG.append('A')
         del TCC[0];TCC.append('G')
     
     #CTCC,CAG,TGC
     change_num=randint(0,cTCc)
-    for i in xrange(change_num):
+    for i in range(change_num):
         CTCC[i]='AG'
         del CAG[0];CAG.append('T')
         del TGC[0];TGC.append('C')
     
     #CAGT,CTG,TCT
     change_num=randint(0,cAGt)
-    for i in xrange(change_num):
+    for i in range(change_num):
         CAGT[i]='TC'
         del CTG[0];CTG.append('A')
         del TCT[0];TCT.append('G')
     
     #CTCT,CAG,TGT
     change_num=randint(0,cTCt)
-    for i in xrange(change_num):
+    for i in range(change_num):
         CTCT[i]='AG'
         del CAG[0];CAG.append('T')
         del TGT[0];TGT.append('C')
     
     #TAGC,TTG,TCC
     change_num=randint(0,tAGc)
-    for i in xrange(change_num):
+    for i in range(change_num):
         TAGC[i]='TC'
         del TTG[0];TTG.append('A')
         del TCC[0];TCC.append('G')
     
     #TTCC,TAG,TGC
     change_num=randint(0,tTCc)
-    for i in xrange(change_num):
+    for i in range(change_num):
         TTCC[i]='AG'
         del TAG[0];TAG.append('T')
         del TGC[0];TGC.append('C')
     
     #TAGC,TTG,TCT
     change_num=randint(0,tAGt)
-    for i in xrange(change_num):
+    for i in range(change_num):
         TAGC[i]='TC'
         del TTG[0];TTG.append('A')
         del TCT[0];TCT.append('G')
     
     #tTCt=min(len(TTCC),len(TAG),len(TGT))
     change_num=randint(0,tTCt)
-    for i in xrange(change_num):
+    for i in range(change_num):
         TTCC[i]='AG'
         del TAG[0];TAG.append('T')
         del TGT[0];TGT.append('C')
@@ -1291,7 +1291,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     shuffle(GTCC),shuffle(CTCC),shuffle(TTCC),shuffle(GTCT),shuffle(CTCT),shuffle(TTCT)
     
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='GTG':seq2+=GTG.pop(0)
         elif seq1[i]=='GAG':seq2+=GAG.pop(0)
         elif seq1[i]=='CTG':seq2+=CTG.pop(0)
@@ -1330,7 +1330,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     GRA=[]#only gly
     GRT,GRC,GRG=[],[],[]
     
-    for num in xrange(2,len(seq)-3,3):
+    for num in range(2,len(seq)-3,3):
         seq1+=seq[num-2:num]
         if seq[num-2:num]=='CG' and(seq[num]=='C'or seq[num]=='T'):
             if seq[num+1]=='A':
@@ -1381,7 +1381,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     shuffle(GYA),shuffle(GYT),shuffle(GYC),shuffle(GYG),shuffle(GRA),shuffle(GRG),shuffle(GRC),shuffle(GRT)
     
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='GYA':seq2+=GYA.pop(0)
         elif seq1[i]=='GRA':seq2+=GRA.pop(0)
         elif seq1[i]=='GYT':seq2+=GYT.pop(0)
@@ -1398,7 +1398,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     CGTG,CGCG,GTG,GCG,GAG=[],[],[],[],[]
     
     seq1+=seq[:2]
-    for num in xrange(2,len(seq)-2,1):
+    for num in range(2,len(seq)-2,1):
         if seq[num-2:num+2]=='CGCG' and num%3==2:
             CGCG+=seq[num],
             seq1+='CGYG',
@@ -1431,7 +1431,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     shuffle(CGYG),shuffle(GTG),shuffle(GCG),shuffle(GAG)
     
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='CGYG':seq2+=CGYG.pop(0)
         elif seq1[i]=='GTG':seq2+=GTG.pop(0)
         elif seq1[i]=='GCG':seq2+=GCG.pop(0)
@@ -1442,7 +1442,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     seq1=[]
     TMG,AMG,GMG,CMG=[],[],[],[]
     seq1+=seq[:2],
-    for num in xrange(2,len(seq)-2,1):
+    for num in range(2,len(seq)-2,1):
         if (num%3==0 and(seq[num:num+3]=='CGA' or seq[num:num+3]=='CGG' or seq[num:num+3]=='AGA' or seq[num:num+3]=='AGG'))or(num%3==2 and (seq[num:num+2]=='CG' or seq[num:num+2]=='AG')and((seq[num-1]=='T'and seq[num-2]!='T')or seq[num-1]=='C'or seq[num-2:num]=='GG')):
             if seq[num-1]=='T':
                 seq1+='TMG',
@@ -1463,7 +1463,7 @@ def exchange6deg(seq):#this function shuffles the first nucleotide for two six-c
     seq1+=seq[-2:]
     shuffle(TMG),shuffle(GMG),shuffle(AMG),shuffle(CMG)
     seq2=''
-    for i in xrange(len(seq1)):
+    for i in range(len(seq1)):
         if seq1[i]=='TMG':seq2+=TMG.pop(0)
         elif seq1[i]=='AMG':seq2+=AMG.pop(0)
         elif seq1[i]=='GMG':seq2+=GMG.pop(0)
@@ -1537,7 +1537,7 @@ for strain in names_list:
 
 
     outfile=open(seq_name[1:-1]+'_'+args.random_type+'.fas','a') #Append permuted sequence
-    for i in xrange(args.reps):
+    for i in range(args.reps):
         outseq=data[strain]
         if args.random_type =='gc3':
             outseq=gc3(outseq)
@@ -1554,7 +1554,7 @@ for strain in names_list:
 #     bat_enc='chips  -seqall '+seq_name[1:-1]+'_'+args.random_type+'.fas -nosum -outfile '+seq_name[1:-1]+'_'+args.random_type+'.enc -auto\n'
 #     system(bat_enc)
 
-first_tot_out_string=`args.reps`+'_replicas\nstrain\t\tstrain_Nc\t'
+first_tot_out_string=repr(args.reps)+'_replicas\nstrain\t\tstrain_Nc\t'
 #if 'gc3'in types_of_rnd:first_tot_out_string+='\tmean_Nc_gc3\tsd\t'
 if 'n3'in types_of_rnd:first_tot_out_string+='\tmean_Nc_n3\tsd\t'
 if 'all'in types_of_rnd:first_tot_out_string+='\tmean_Nc_all\tsd\t'
@@ -1601,7 +1601,7 @@ filename = seq_name[1:-1]+'_'+args.random_type+'.fas'
 final_table=pandas.DataFrame()
 
 #Calculate Sequence distance
-print "Calculating Hamming distance"
+print("Calculating Hamming distance")
 seq_records=[]
 
 inseq_file=open(filename,'rU')
@@ -1632,7 +1632,7 @@ if args.graphics:
 
 if 'CAI' in args.modules or 'all' in args.modules:
     #Run CAI and read result table
-    print "Calculating CAI"
+    print("Calculating CAI")
     cainame = seq_name[1:-1]+'_'+args.random_type+'.cai'
     call(["./lib/EMBOSS-6.6.0/emboss/cai", "-seqall="+filename, "-outfile="+cainame, "-cfile=Ehuman.cut"]) #Insert path before cai in this line (CAI)
     u_cols = ['a', 'sequence', 'b', 'cai']
@@ -1660,7 +1660,7 @@ if 'CAI' in args.modules or 'all' in args.modules:
 
 if 'ENC' in args.modules or 'all' in args.modules:
     #  Run ENC and result table
-    print "Calculating ENC"
+    print("Calculating ENC")
     call(["./lib/codonW/codonw", filename, "-enc", "-nomenu", "-nowarn", "-silent"]) #Insert path before codonw in this line (ENC)
     enc_filename = seq_name[1:-1]+'_'+args.random_type+'.out'
     enc_table = pandas.read_csv(enc_filename, sep='\t')
@@ -1685,7 +1685,7 @@ if 'ENC' in args.modules or 'all' in args.modules:
 
 if 'VFOLD' in args.modules or 'all' in args.modules:
 #Read FOLD (minimum free energy) table
-    print "Calculating VFOLD"
+    print("Calculating VFOLD")
     foldname = seq_name[1:-1]+'_'+args.random_type+'.fold'
     mfename = seq_name[1:-1]+'_'+args.random_type+'.mfe'
     i = open(filename, "r")
@@ -1730,7 +1730,7 @@ if 'VFOLD' in args.modules or 'all' in args.modules:
 
 if 'UFOLD' in args.modules:
 #Read FOLD (minimum free energy) table
-    print "Calculating UFOLD"
+    print("Calculating UFOLD")
     foldname = seq_name[1:-1]+'_'+args.random_type+'.fold'
     mfename = seq_name[1:-1]+'_'+args.random_type+'.fasta.dG'
     i = open(filename, "r")
@@ -1758,7 +1758,7 @@ if 'UFOLD' in args.modules:
 
 
 if 'DN' in args.modules or 'all' in args.modules:
-    print "Calculating DN"
+    print("Calculating DN")
     dnname = seq_name[1:-1]+'_'+args.random_type+'.dn'
     dn_file=open(dnname, 'w')
        
@@ -1894,7 +1894,7 @@ if 'CPB' in args.modules or 'all' in args.modules:
     #                 SeqIO.parse(filename, "fasta")))
     #SeqIO.write(proteins, filename+"_prot", "fasta")
     
-    print "Calculating CPB"
+    print("Calculating CPB")
     cpbname = seq_name[1:-1]+'_'+args.random_type+'.cpb'
     cpb_file=open(cpbname,'w')
     
@@ -1945,7 +1945,7 @@ if 'CPB' in args.modules or 'all' in args.modules:
             cps_tb_final['CPS'] = cps_tb_final['CPS'].astype(float)
             cps_tb_final['result'] = cps_tb_final.CPS * cps_tb_final.Obs
         cpb = sum(cps_tb_final['result'])/sum(cps_tb_final['Obs'])
-        print str(cpb)
+        print(str(cpb))
         cpb_file.write(str(cpb)+"\n")
     cpb_file.close()
     
@@ -1970,7 +1970,7 @@ if 'CPB' in args.modules or 'all' in args.modules:
 
 #Calculation least square
 
-print "Calculating Least Squares"
+print("Calculating Least Squares")
 least_squares = np.sqrt(least_squares)
 least_squares.columns = ['distance']
 
@@ -1986,7 +1986,7 @@ final_table.insert(0, "Distance(ls)", least_squares['distance'])
 
 # Create final graph and table 
 
-print "Making final table"
+print("Making final table")
 nuc_distance_name=filename+'_distance_table.txt'
 nuc_distance_file=open(nuc_distance_name,'w')
 nuc_distance_table = np.zeros((n,n))
@@ -2021,28 +2021,3 @@ if args.graphics:
     final_graphname = filename +'final_graph.pdf'
     final_graph = ggplot(new_table, aes('Distance', 'Nucleotide_difference'))+geom_point()+labs("Least Square Distance","Hamming Distance (nt)")+ggtitle(seq_name[1:-1]+'_'+args.random_type)
     ggsave(final_graph, final_graphname)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
