@@ -1,6 +1,6 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3
 
-from __future__ import division
+
 import os
 import numpy
 import scipy
@@ -40,7 +40,7 @@ seq_records=[]
 wanted_seq=[]
 
 
-print wanted_id
+print(wanted_id)
 
 seq_file = open('seq_file.fas', 'w') 
 for seq_record in SeqIO.parse(inseq_file, "fasta"):
@@ -118,14 +118,3 @@ ggsave(fold_graph, fold_graphname)
 # fig.savefig('seq_file_fold.pdf')
 # plt.close(fig)
 # plt.show()
-
-
-
-
-
-
-
-
-
-
-
