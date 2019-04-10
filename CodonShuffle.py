@@ -1489,11 +1489,13 @@ def make_protein_record(nuc_record):
 
 #Input Data
 parser = argparse.ArgumentParser(description='CodonShuffle.')
-parser.add_argument('-i', nargs='?', help='Input Filename', required=True, dest="input_file_name")
-parser.add_argument('-s', choices=['dn23', 'dn31', 'dn231', 'n3'], nargs='?', help='Type of shuffle', default="dn23", dest="random_type")
-parser.add_argument('-r', nargs='?', help='Number of replications (int)', default='1000', dest="reps", type=int)
-parser.add_argument('-m', choices=['CAI', 'CPB', 'DN', 'ENC', 'VFOLD', 'UFOLD', 'all'], nargs='*', help='Control Features [select one, multiple, or all]', default='all', dest="modules")
-parser.add_argument('-g', dest="graphics", help='Generate Feature Plots', action="store_true")
+parser.add_argument('-i', '--input', nargs='?', help='Input Filename', required=True, dest="input_file_name")
+parser.add_argument('-s', '--shuffle', choices=['dn23', 'dn31', 'dn231', 'n3'], nargs='?', help='Type of shuffle', default="dn23", dest="random_type")
+parser.add_argument('-r', '--replications', nargs='?', help='Number of replications (int)', default='1000', dest="reps", type=int)
+parser.add_argument('-m', '--modules' choices=['CAI', 'CPB', 'DN', 'ENC', 'VFOLD', 'UFOLD', 'all'], nargs='*', help='Control Features [select one, multiple, or all]', default='all', dest="modules")
+parser.add_argument('-g', '--graphics' dest="graphics", help='Generate Feature Plots', action="store_true")
+#parser.add_argument('--cut', help='Path to cut file')
+#parser.add_argument('--cps', help='Path to cps file')
 parser.add_argument('--seed', type=int, nargs='?', dest='randomseed', help='Optional integer for random seed', const=99)
 args = parser.parse_args()
 
